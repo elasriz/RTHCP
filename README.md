@@ -27,7 +27,7 @@ Our pipeline introduces:
 - A **D-step MPC strategy** that precomputes sequences of actions to bridge inference gaps.
 
 <p align="center">
-  <img src="RTHCP_method.gif" alt="RT-HCP Diagram" width="600"/>
+  <img src="media/RTHCP_method.gif" alt="RT-HCP Diagram" width="600"/>
 </p>
 
 ## 📊 Experimental Results
