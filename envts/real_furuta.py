@@ -4,7 +4,6 @@ import numpy as np
 from math import pi
 from time import time_ns, sleep, perf_counter
 import sys
-from loop_rate_limiters import RateLimiter
 from typing import Any, Callable, List, Optional, Set
 
 from numpy import cos, pi, sin, exp

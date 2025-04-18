@@ -15,18 +15,12 @@ from numpy import cos, pi, sin
 from gymnasium.error import DependencyNotInstalled
 from gymnasium.utils import seeding
 
-from typing import Any, Callable, List, Optional, Set
-from os import path
 import math
-from loop_rate_limiters import RateLimiter
-import time
+
 
 class FurutaEnv(gym.Env):
 
     torque_noise_max = 0.0
-
-    
-
     action_arrow = None
     domain_fig = None
 
@@ -126,115 +120,40 @@ class FurutaEnv(gym.Env):
 
     def step(self, a):
 
-        #print("env a", a)
-        #print("env", (time_ns())*1e-6)
 
         if not self.initial_time:
             self.initial_time = time_ns()
             self.next_start_time  = self.initial_time + (self.dt - 0.002) * 1e9        
 
         s = self.state
-        #print("transition env", s, a)
-        #print(self.all_actions())
-        
-        #print("action", a)
+
         assert s is not None, "Call reset before using AcrobotEnv object."
         torque = np.array(self.action_max) * a
-
-        #print(self.next_start_time)
-        #print(self.dt)
-
-
-        
-        
-
-        #print("time", self.next_start_time*1e-6)
-
-
 
         s_augmented = np.append(s, torque)
 
         ns = symplectic(self._dsdt, s_augmented, self.dt)
 
-        #ns[0] = wrap_to_pi(ns[0])
-        #ns[1] = wrap_to_pi(ns[1])
-        #ns[2] = bound(ns[2], -self.MAX_VEL_1, self.MAX_VEL_1)
-        #ns[3] = bound(ns[3], -self.MAX_VEL_2, self.MAX_VEL_2)
-
-        
-
-
-
-
         in_step = True
-        #print("envvvvvvv")
-
-
         while in_step:
             try:
         # Wait for next loop start time
                 if time_ns() > self.next_start_time:
-                    #print("heeeeeeeeeeeeeere")
 
                     self.state = ns
                     terminated = self._terminal()
-                    #reward = -1.0 if not terminated else 0.0
                     reward = np.exp(-0.5*( 1.0* (1.0  +  np.cos( s[1] ))**2 +  np.sin( s[1] )**2 + 0.5 * ( np.cos(s[0]) - 1)**2  + 0.0005*s[2]**2 + 0.00025*s[3]**2 + 0.00001 * (a[0]**2)))
                     in_step = False
                     self.next_start_time  = time_ns() + (self.dt - 0.002) * 1e9
 
+            finally:
 
-
-            except KeyboardInterrupt:
-                print("Problem !")
-                #self.cmd_voltage(0.) # set voltage to 0 in case of a problem
-                #self.close()
-                #observer_test.append_to(f"lundi/data/dataset.csv")
-                break        
-
-            except Exception as e:
-                print("Problem !", e)
-                #self.cmd_voltage(0.) # set voltage to 0 in case of a problem
-                #self.close()
-                #observer_test.append_to(f"lundi/data/dataset.csv")
                 break  
-
-        
-        #print("*********************  step  ********************")
-
-
-        # Add noise to the force action
-        #if self.torque_noise_max > 0:
-        #    torque += self.np_random.uniform(
-        #        -self.torque_noise_max, self.torque_noise_max
-        #    )
-
-        # Now, augment the state with our force action so it can be passed to
-        # _dsdt
-
-
-        #print("new state", ns)
-
-
-
-
-
-
-        #reward = 0.25 * (1.0 + cos(s[0])) + (1.0- cos(s[1]))
-
-        #reward = 10.0 * (1.0 - cos(s[0]))**2 + 100.0*(1.0 + cos(s[1]))**2 + 100.0*sin(s[1])**2 + s[2]**2 + s[3]**2 + 0.01* a[0]**2
-
-        #time.sleep(self.dt)
-        #print("env", s[0], a, reward, terminated)
-        
 
         return (self._get_ob(), reward, terminated, False, {})
 
     def _terminal(self):
         s = self.state
-
-        #print(s)
-
         return bool(np.cos(s[0]) < -0.4)
     
     def _dsdt(self, s_augmented):
@@ -263,43 +182,27 @@ class FurutaEnv(gym.Env):
         
         # Mass matrix
         m11 = J1 + 0.25*mp*(Lp**2)*(sinbeta**2)
-        #print("m11", m11)
         m22 = J2
-        #print("m22", m22)
         m12 = 0.5 * mp*Lr*Lp*cosbeta
-        #print("m12", m12)
+
         MassMat = np.array([[m11, m12],[m12, m22]])
-
-        #print("MassMat", MassMat)
-
-        
         
         N_vec = 0.5*mp*Lp*sinbeta * np.array([Lp*dalpha*dbeta*cosbeta-Lr*(dbeta**2),
                                                    -0.5*Lp*(dalpha**2)*cosbeta])
         
-        #print("N_vec", N_vec)
-        
         G_vec = np.array([0.,
                       0.5*mp*g*Lp*sinbeta])
-        
-        #print("G_vec", G_vec)
+    
 
-        tau_mot = kt*(-a[0] - km*dalpha)/Rm # Not sure if it's a[0]
-
-        #print("tau_mot", tau_mot)
+        tau_mot = kt*(-a[0] - km*dalpha)/Rm 
 
         tau_vec = np.array([tau_mot - cr*dalpha,
                             -cp*dbeta])
         
-        #print("tau_vec", tau_vec)
 
         Minv = np.linalg.inv(MassMat)
 
-        #print("Minv", Minv)
-
         ddx = Minv @ (tau_vec - N_vec - G_vec)
-
-        #print("ddx", ddx)
 
         ddalpha, ddbeta = ddx
         
