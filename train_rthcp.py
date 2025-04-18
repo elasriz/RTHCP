@@ -21,15 +21,16 @@ def main():
 
 
     multiprocessing.set_start_method("spawn", force=True)
-    evaluating_rewards = train(delay = 3,
-                            training_timesteps = 200000,
-                            directory = "training_Furuta",
-                              eval_frequency = 5000,
+    evaluating_rewards = train(env_name = "delay_furuta",
+                                delay = 3,
+                                training_timesteps = 200000,
+                                directory = "training_Furuta",
+                                eval_frequency = 5000,
                                 save_frequency = 5000,
-                                  model_fit_frequency = 5000,
-                                    imagination_frequency = 20000,
-                                      resume_episode = 0, 
-                                      seed = 1000
+                                model_fit_frequency = 5000,
+                                imagination_frequency = 20000,
+                                resume_episode = 0, 
+                                seed = 1000
                                         )
     save_data(evaluating_rewards, seed = 1000, directory = Path("training_Furuta"), filename="training_data.csv")
 
@@ -38,7 +39,7 @@ def main():
 
 
 
-def train(delay, training_timesteps, directory, eval_frequency, save_frequency, model_fit_frequency, imagination_frequency, resume_episode=0, seed=48):
+def train(env_name, delay, training_timesteps, directory, eval_frequency, save_frequency, model_fit_frequency, imagination_frequency, resume_episode=0, seed=48):
     """
     Main training loop for a reinforcement learning agent with delayed actions.
 
@@ -46,6 +47,7 @@ def train(delay, training_timesteps, directory, eval_frequency, save_frequency, 
     saves policies, buffers, and trains a dynamics model and an imaginary environment.
 
     Args:
+        env_name (str): The environment name.
         delay (int): The fixed delay in the environment between action selection and effect.
         training_timesteps (int): Total number of training steps to execute.
         directory (str): Directory where models, buffers, and logs will be saved.
@@ -74,7 +76,7 @@ def train(delay, training_timesteps, directory, eval_frequency, save_frequency, 
     try:
         #Initialization
         #print(".... Initializing the Environment")
-        env, observer = create_env(delay)
+        env, observer = create_env(env_name, delay)
 
 
         #print(".... Initializing the Agent")

@@ -53,7 +53,7 @@ def create_agent(env, observer, delay):
     return agent
 
 
-def create_env(delay):
+def create_env(env_name, delay):
     """
     Initializes the environment for training.
 
@@ -63,8 +63,7 @@ def create_env(delay):
     Returns:
         tuple: The initialized environment instance and observer.
     """
-
-    env, observer = env_factory("delay_real_furuta", frequency=50, delay=delay)
+    env, observer = env_factory(env_name, frequency=50, delay=delay)
 
     return env, observer
 

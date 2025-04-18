@@ -18,22 +18,32 @@ def env_factory(env_name: str, frequency= None, delay: int = 0, model_class = No
         env = RealFurutaEnv(frequency = frequency)
         observer = FurutaObserver()
 
-    elif env_name == "im_furuta":
-        import envts.fake_furuta
+    elif env_name == "delay_real_furuta":
+        from envts.real_furuta import RealFurutaEnv
+        env1 = RealFurutaEnv(frequency = frequency)
+        from envts.DelayWrapper import DelayWrapper
+        env = DelayWrapper(env1, delay)
+        observer = FurutaObserver()
 
-        
+    elif env_name == "furuta":
+        import envts.furuta
+        env = gym.make("furuta")        
+        observer = FurutaObserver()  
+
+    elif env_name == "delay_furuta":
+        import envts.furuta
+        env1 = gym.make("furuta", frequency = frequency)         
+        from envts.DelayWrapper import DelayWrapper
+        env = DelayWrapper(env1, delay)
+        observer = FurutaObserver()
+
+    elif env_name == "im_furuta":
+        import envts.fake_furuta        
         env = gym.make("im_furuta", model_class=model_class, model_path=model_path,  directory=dir)        
         observer = FurutaObserver()
 
 
-    elif env_name == "delay_real_furuta":
-        from envts.real_furuta import RealFurutaEnv
-        env1 = RealFurutaEnv(frequency = frequency)
 
-        from envts.DelayWrapper import DelayWrapper
-        env = DelayWrapper(env1, delay)
-
-        observer = FurutaObserver()
 
 
     else:
