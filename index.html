@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RT-HCP: Dealing with Inference Delays and Sample Efficiency</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+      color: #222;
+    }
+    h1, h2 {
+      color: #003366;
+    }
+    a {
+      color: #007acc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+    }
+    code {
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 Real-Time Hybrid Control with Physics</h1>
+  <p><strong>Presented at IROS 2025</strong></p>
+  <p>
+    <a href="https://drive.google.com/file/d/1o7KSa_mcdQYd44YF6MeNFWr5cQxrvxb7/view?usp=sharing">📄 Paper</a> ·
+    <a href="https://github.com/elasriz/RTHCP/">💻 Code</a> ·
+    <a href="https://youtu.be/Janb7beQVwk">🎥 Video</a>
+  </p>
+
+  <h2>🧠 Motivation</h2>
+  <p>Reinforcement Learning (RL) has shown great success in simulated environments, but faces two major bottlenecks in real-world robotic applications:</p>
+  <ul>
+    <li><strong>Sample Inefficiency</strong>: Model-free RL requires a large amount of interactions with the environment, which is impractical or costly on physical robots.</li>
+    <li><strong>Inference Delays</strong>: In model-based RL, computing the next action using forward models or planning methods often takes too long to maintain real-time control on embedded hardware.</li>
+  </ul>
+
+  <h2>⚙️ Key Contributions</h2>
+  <ul>
+    <li><strong>D-step MPC Framework</strong>: A novel method to handle <em>inference delays</em> in model-based RL by computing and queuing actions in advance.</li>
+    <li><strong>RT-HCP</strong>: A <em>real-time hybrid control</em> policy combining:
+      <ul>
+        <li>Model-based planning</li>
+        <li>Model-free actor-critic agent for fast feedback</li>
+        <li>Prior dynamics models</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>📐 Method Overview</h2>
+  <p>Our pipeline introduces:</p>
+  <ul>
+    <li>A <strong>Delay Wrapper</strong> that models and handles inference delays using action/state buffers</li>
+    <li>An <strong>augmented state</strong> formulation incorporating current and past states</li>
+    <li>A <strong>D-step MPC</strong> strategy that precomputes action sequences</li>
+  </ul>
+
+  <p class="center">
+    <img src="media/RTHCP_method.gif" alt="RT-HCP Diagram" width="600">
+  </p>
+
+  <h2>📊 Experimental Results</h2>
+  <p>RT-HCP was evaluated on a real Furuta pendulum system and compared to several baselines:</p>
+
+  <table>
+    <tr>
+      <th>Method</th>
+      <th>Performance</th>
+      <th>Real-time Capability</th>
+      <th>Sample Efficiency</th>
+    </tr>
+    <tr>
+      <td>RT-HCP</td>
+      <td>🟢 High</td>
+      <td>✅ Yes</td>
+      <td>🟢 High</td>
+    </tr>
+    <tr>
+      <td>RT-TDMPC</td>
+      <td>🟠 Moderate</td>
+      <td>✅ Yes</td>
+      <td>🟠 Moderate</td>
+    </tr>
+    <tr>
+      <td>RT-PETS</td>
+      <td>⚠️ Low</td>
+      <td>⚠️ No</td>
+      <td>🟠 Moderate</td>
+    </tr>
+    <tr>
+      <td>TD3</td>
+      <td>🟠 Moderate</td>
+      <td>✅ Yes</td>
+      <td>⚠️ Very Low</td>
+    </tr>
+  </table>
+
+  <p>RT-HCP enables continuous control and robust policy learning, even under strict real-time constraints.</p>
+
+  <p>🎥 <strong>Watch the policy behaviors:</strong> <a href="https://youtu.be/Janb7beQVwk">Link to video</a></p>
+
+  <h2>🔗 Resources</h2>
+  <ul>
+    <li>📄 <strong>Paper:</strong> <a href="https://drive.google.com/file/d/1o7KSa_mcdQYd44YF6MeNFWr5cQxrvxb7/view?usp=sharing">PDF</a></li>
+    <li>💻 <strong>Code:</strong> <a href="https://github.com/elasriz/RTHCP/">GitHub Repository</a></li>
+    <li>📍 <strong>BibTeX:</strong>
+      <pre><code>@inproceedings{...}</code></pre>
+    </li>
+  </ul>
+
+</body>
+</html>
