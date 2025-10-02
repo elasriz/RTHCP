@@ -1,7 +1,7 @@
 # RT-HCP: Dealing with Inference Delays and Sample Efficiency to Learn Directly on Robotic Platforms [Paper](https://arxiv.org/abs/2509.06714)
 
-Authors: Zakariae El Asri, Ibrahim Laiche, Clément Rambour, Olivier Sigaud, Nicolas Thome  
-Affiliation: Sorbonne Université, CNRS, ISIR, Paris, France  
+Authors: **Zakariae El Asri, Ibrahim Laiche, Clément Rambour, Olivier Sigaud, Nicolas Thome**
+Affiliation: **Sorbonne Université, CNRS, ISIR, Paris, France**  
 
 ## 🧠 Motivation
 
